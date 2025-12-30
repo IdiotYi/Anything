@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anything - 电影种子搜索</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin-top: 80px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo h1 {
+            color: white;
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .logo p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 50px;
+            padding: 8px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            display: flex;
+            margin-bottom: 30px;
+        }
+
+        #searchInput {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            background: transparent;
+        }
+
+        #searchBtn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-weight: 500;
+        }
+
+        #searchBtn:hover {
+            transform: scale(1.05);
+        }
+
+        #searchBtn:active {
+            transform: scale(0.95);
+        }
+
+        .results {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .results-header {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .result-item {
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-item:hover {
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .result-title {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .result-info {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .result-link {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 6px 16px;
+            border: 1px solid #667eea;
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+
+        .result-link:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 16px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin-top: 40px;
+            }
+
+            .logo h1 {
+                font-size: 36px;
+            }
+
+            .search-box {
+                flex-direction: column;
+                border-radius: 12px;
+                padding: 12px;
+            }
+
+            #searchInput {
+                margin-bottom: 8px;
+            }
+
+            #searchBtn {
+                width: 100%;
+                border-radius: 8px;
+            }
+
+            .result-info {
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>Anything</h1>
+            <p>搜索你想要的任何电影</p>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="输入电影名称..." />
+            <button id="searchBtn">搜索</button>
+        </div>
+
+        <div id="results" class="results">
+            <div class="results-header">搜索结果</div>
+            <div id="resultsList"></div>
+        </div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const results = document.getElementById('results');
+        const resultsList = document.getElementById('resultsList');
+
+        // 模拟搜索功能（实际需要后端API）
+        function searchMovies(query) {
+            // 显示加载状态
+            results.classList.add('show');
+            resultsList.innerHTML = '<div class="loading">正在搜索...</div>';
+
+            // 模拟API延迟
+            setTimeout(() => {
+                // 模拟搜索结果数据
+                const mockResults = [
+                    {
+                        title: `${query} (2023) 4K HDR`,
+                        size: '8.5 GB',
+                        seeders: '125',
+                        leechers: '23',
+                        magnetLink: 'magnet:?xt=urn:btih:example1'
+                    },
+                    {
+                        title: `${query} (2023) 1080p BluRay`,
+                        size: '2.3 GB',
+                        seeders: '456',
+                        leechers: '89',
+                        magnetLink: 'magnet:?xt=urn:btih:example2'
+                    },
+                    {
+                        title: `${query} (2023) 720p WEB-DL`,
+                        size: '1.2 GB',
+                        seeders: '234',
+                        leechers: '45',
+                        magnetLink: 'magnet:?xt=urn:btih:example3'
+                    }
+                ];
+
+                if (mockResults.length > 0) {
+                    resultsList.innerHTML = mockResults.map(item => `
+                        <div class="result-item">
+                            <div class="result-title">${item.title}</div>
+                            <div class="result-info">
+                                <span>大小: ${item.size}</span>
+                                <span>做种: ${item.seeders}</span>
+                                <span>下载: ${item.leechers}</span>
+                            </div>
+                            <a href="${item.magnetLink}" class="result-link">磁力链接</a>
+                        </div>
+                    `).join('');
+                } else {
+                    resultsList.innerHTML = '<div class="no-results">未找到相关结果</div>';
+                }
+            }, 800);
+        }
+
+        // 搜索按钮点击事件
+        searchBtn.addEventListener('click', () => {
+            const query = searchInput.value.trim();
+            if (query) {
+                searchMovies(query);
+            }
+        });
+
+        // 回车键搜索
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const query = searchInput.value.trim();
+                if (query) {
+                    searchMovies(query);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
