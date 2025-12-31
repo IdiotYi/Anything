@@ -105,6 +105,15 @@
             border-bottom: 2px solid #f0f0f0;
         }
 
+        .results-note {
+            background: #f0f4ff;
+            color: #4a4a75;
+            font-size: 14px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
         .result-item {
             padding: 16px;
             border-bottom: 1px solid #f0f0f0;
@@ -220,55 +229,67 @@
         const results = document.getElementById('results');
         const resultsList = document.getElementById('resultsList');
 
-        // 模拟搜索功能（实际需要后端API）
-        function searchMovies(query) {
+        const API_BASE_URL = 'http://localhost:5000/api';
+
+        // 搜索电影
+        async function searchMovies(query) {
             // 显示加载状态
             results.classList.add('show');
             resultsList.innerHTML = '<div class="loading">正在搜索...</div>';
 
-            // 模拟API延迟
-            setTimeout(() => {
-                // 模拟搜索结果数据
-                const mockResults = [
-                    {
-                        title: `${query} (2023) 4K HDR`,
-                        size: '8.5 GB',
-                        seeders: '125',
-                        leechers: '23',
-                        magnetLink: 'magnet:?xt=urn:btih:example1'
-                    },
-                    {
-                        title: `${query} (2023) 1080p BluRay`,
-                        size: '2.3 GB',
-                        seeders: '456',
-                        leechers: '89',
-                        magnetLink: 'magnet:?xt=urn:btih:example2'
-                    },
-                    {
-                        title: `${query} (2023) 720p WEB-DL`,
-                        size: '1.2 GB',
-                        seeders: '234',
-                        leechers: '45',
-                        magnetLink: 'magnet:?xt=urn:btih:example3'
-                    }
-                ];
+            try {
+                const response = await fetch(`${API_BASE_URL}/search?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
 
-                if (mockResults.length > 0) {
-                    resultsList.innerHTML = mockResults.map(item => `
-                        <div class="result-item">
-                            <div class="result-title">${item.title}</div>
-                            <div class="result-info">
-                                <span>大小: ${item.size}</span>
-                                <span>做种: ${item.seeders}</span>
-                                <span>下载: ${item.leechers}</span>
-                            </div>
-                            <a href="${item.magnetLink}" class="result-link">磁力链接</a>
-                        </div>
-                    `).join('');
-                } else {
-                    resultsList.innerHTML = '<div class="no-results">未找到相关结果</div>';
+                if (!response.ok) {
+                    throw new Error(data.error || '搜索失败');
                 }
-            }, 800);
+
+                const noteHtml = data.note ? `<div class="results-note">${data.note}</div>` : '';
+
+                if (data.results && data.results.length > 0) {
+                    const labelMap = {
+                        magnet: '磁力链接',
+                        thunder: '迅雷下载',
+                        ed2k: 'ED2K链接',
+                        search: '查看搜索结果'
+                    };
+
+                    const itemsHtml = data.results.map(item => {
+                        let downloadSection = '';
+
+                        if (item.downloadLinks && item.downloadLinks.length > 0) {
+                            downloadSection = item.downloadLinks.map(link => {
+                                const linkText = labelMap[link.type] || '下载';
+                                const targetAttr = link.type === 'search' ? ' target="_blank" rel="noopener noreferrer"' : '';
+                                return `<a href="${link.url}" class="result-link"${targetAttr}>${linkText}</a>`;
+                            }).join(' ');
+                        } else if (item.magnetLink) {
+                            downloadSection = `<a href="${item.magnetLink}" class="result-link">磁力链接</a>`;
+                        } else if (item.detailUrl) {
+                            downloadSection = `<a href="${item.detailUrl}" target="_blank" rel="noopener noreferrer" class="result-link">查看详情</a>`;
+                        }
+
+                        return `
+                            <div class="result-item">
+                                <div class="result-title">${item.title}</div>
+                                <div class="result-info">
+                                    <span>大小: ${item.size || '未知'}</span>
+                                    ${item.year ? `<span>年份: ${item.year}</span>` : ''}
+                                </div>
+                                ${downloadSection}
+                            </div>
+                        `;
+                    }).join('');
+
+                    resultsList.innerHTML = noteHtml + itemsHtml;
+                } else {
+                    resultsList.innerHTML = noteHtml + '<div class="no-results">未找到相关结果</div>';
+                }
+            } catch (error) {
+                console.error('搜索错误:', error);
+                resultsList.innerHTML = `<div class="no-results">搜索出错: ${error.message}</div>`;
+            }
         }
 
         // 搜索按钮点击事件
