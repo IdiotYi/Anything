@@ -132,27 +132,29 @@
         .result-title {
             font-size: 16px;
             color: #333;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             font-weight: 500;
         }
 
-        .result-info {
+        .magnet-links {
             display: flex;
-            gap: 16px;
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 8px;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .result-link {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
             color: #667eea;
             text-decoration: none;
             font-size: 14px;
-            padding: 6px 16px;
+            padding: 8px 12px;
             border: 1px solid #667eea;
             border-radius: 20px;
             transition: all 0.2s;
+            word-break: break-all;
+            max-height: 100px;
+            overflow-y: auto;
         }
 
         .result-link:hover {
@@ -248,36 +250,22 @@
                 const noteHtml = data.note ? `<div class="results-note">${data.note}</div>` : '';
 
                 if (data.results && data.results.length > 0) {
-                    const labelMap = {
-                        magnet: '磁力链接',
-                        thunder: '迅雷下载',
-                        ed2k: 'ED2K链接',
-                        search: '查看搜索结果'
-                    };
-
                     const itemsHtml = data.results.map(item => {
-                        let downloadSection = '';
+                        let magnetSection = '';
 
-                        if (item.downloadLinks && item.downloadLinks.length > 0) {
-                            downloadSection = item.downloadLinks.map(link => {
-                                const linkText = labelMap[link.type] || '下载';
-                                const targetAttr = link.type === 'search' ? ' target="_blank" rel="noopener noreferrer"' : '';
-                                return `<a href="${link.url}" class="result-link"${targetAttr}>${linkText}</a>`;
-                            }).join(' ');
-                        } else if (item.magnetLink) {
-                            downloadSection = `<a href="${item.magnetLink}" class="result-link">磁力链接</a>`;
-                        } else if (item.detailUrl) {
-                            downloadSection = `<a href="${item.detailUrl}" target="_blank" rel="noopener noreferrer" class="result-link">查看详情</a>`;
+                        if (item.magnetLinks && item.magnetLinks.length > 0) {
+                            const magnetsHtml = item.magnetLinks.map(link => {
+                                return `<a href="${link.magnet}" class="result-link" title="点击打开磁力链接">${link.title}</a>`;
+                            }).join('');
+                            magnetSection = `<div class="magnet-links">${magnetsHtml}</div>`;
+                        } else {
+                            magnetSection = '<div style="color: #999; font-size: 14px;">未找到种子链接</div>';
                         }
 
                         return `
                             <div class="result-item">
                                 <div class="result-title">${item.title}</div>
-                                <div class="result-info">
-                                    <span>大小: ${item.size || '未知'}</span>
-                                    ${item.year ? `<span>年份: ${item.year}</span>` : ''}
-                                </div>
-                                ${downloadSection}
+                                ${magnetSection}
                             </div>
                         `;
                     }).join('');

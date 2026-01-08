@@ -2,40 +2,84 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 import urllib.parse
+import sys
+import os
+
+# 添加scripts目录到Python路径
+scripts_path = os.path.join(os.path.dirname(__file__), '..', 'scripts')
+if os.path.exists(scripts_path):
+    sys.path.insert(0, scripts_path)
+
+try:
+    from gettorrenturl import parse_search_results
+    from getdetailedtorrent import parse_magnet_links
+except ImportError as e:
+    print(f"Warning: Could not import required modules: {e}")
+    # Define placeholder functions if imports fail
+    def parse_search_results(url):
+        return []
+    def parse_magnet_links(url):
+        return []
 
 app = Flask(__name__)
 CORS(app)
 
 def search_movies(keyword):
-    """使用帝国影视站点生成搜索结果链接"""
+    """搜索电影并获取所有相关电影及其种子链接"""
     search_url = search_dygang(keyword)
 
     if not search_url:
         return []
 
-    title = f"在帝国影视搜索：{keyword}"
-
-    result = {
-        'title': title,
-        'size': '',
-        'year': '',
-        'quality': '',
-        'language': '',
-        'detailUrl': search_url,
-        'searchUrl': search_url,
-        'magnetLink': None,
-        'downloadLinks': [
-            {
-                'type': 'search',
-                'url': search_url,
-                'text': '打开搜索结果'
-            }
-        ],
-        'seeders': '',
-        'leechers': ''
-    }
-
-    return [result]
+    try:
+        # 第一步：解析搜索结果页面，获取所有相关电影及其详情页URL
+        movies = parse_search_results(search_url)
+        
+        if not movies:
+            return []
+        
+        # 第二步：为每个电影解析其详情页，获取种子链接
+        results = []
+        for movie in movies:
+            movie_title = movie.get('title', '')
+            detail_url = movie.get('url', '')
+            
+            try:
+                # 解析详情页获取种子链接
+                magnet_links = parse_magnet_links(detail_url)
+                
+                result = {
+                    'title': movie_title,
+                    'detailUrl': detail_url,
+                    'magnetLinks': magnet_links,  # 所有种子链接
+                    'size': '',
+                    'year': '',
+                    'quality': '',
+                    'language': '',
+                    'seeders': '',
+                    'leechers': ''
+                }
+                results.append(result)
+            except Exception as e:
+                print(f"解析电影 {movie_title} 的详情页失败: {e}")
+                # 即使解析失败，仍然返回电影信息（只是没有种子链接）
+                result = {
+                    'title': movie_title,
+                    'detailUrl': detail_url,
+                    'magnetLinks': [],
+                    'size': '',
+                    'year': '',
+                    'quality': '',
+                    'language': '',
+                    'seeders': '',
+                    'leechers': ''
+                }
+                results.append(result)
+        
+        return results
+    except Exception as e:
+        print(f"搜索电影失败: {e}")
+        return []
 
 
 def search_dygang(keyword):
