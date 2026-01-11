@@ -6,20 +6,10 @@ import sys
 import os
 
 # 添加scripts目录到Python路径
-scripts_path = os.path.join(os.path.dirname(__file__), '..', 'scripts')
-if os.path.exists(scripts_path):
-    sys.path.insert(0, scripts_path)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'scripts'))
 
-try:
-    from gettorrenturl import parse_search_results
-    from getdetailedtorrent import parse_magnet_links
-except ImportError as e:
-    print(f"Warning: Could not import required modules: {e}")
-    # Define placeholder functions if imports fail
-    def parse_search_results(url):
-        return []
-    def parse_magnet_links(url):
-        return []
+from gettorrenturl import parse_search_results
+from getdetailedtorrent import parse_magnet_links
 
 app = Flask(__name__)
 CORS(app)
