@@ -74,7 +74,7 @@ def search_movies(keyword):
 
 def search_dygang(keyword):
     """调用帝国影视的搜索接口并获取跳转URL"""
-    base_url = "https://www.dygang.cc"
+    base_url = "https://www.dygangs.me"
 
     try:
         try:
