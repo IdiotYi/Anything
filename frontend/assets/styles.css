@@ -1,0 +1,73 @@
+:root { --bg:#08090d; --panel:#151720; --gold:#d9b36c; --gold2:#f4d99d; --text:#f7f2e8; --muted:#9697a2; --line:rgba(224,190,121,.18); }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; min-height:100vh; color:var(--text); font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif; background:radial-gradient(circle at 12% 8%,rgba(125,92,255,.2),transparent 31rem),radial-gradient(circle at 88% 22%,rgba(217,179,108,.15),transparent 34rem),linear-gradient(145deg,#07080c,#10111a 52%,#08090d); }
+    body:before { content:""; position:fixed; inset:0; pointer-events:none; opacity:.2; background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px); background-size:48px 48px; mask-image:linear-gradient(to bottom,#000,transparent 72%); }
+    button,input { font:inherit; }
+    .shell { position:relative; z-index:1; width:min(1240px,calc(100% - 40px)); margin:auto; }
+    .topbar { height:86px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,.06); }
+    .brand { display:flex; align-items:center; gap:13px; color:var(--text); text-decoration:none; font:600 14px Georgia,serif; letter-spacing:.18em; }
+    .brand-mark { width:39px; height:39px; display:grid; place-items:center; border:1px solid rgba(244,217,157,.45); border-radius:50%; color:var(--gold2); }
+    .top-meta { color:#70717d; font-size:10px; letter-spacing:.25em; text-transform:uppercase; }
+    .hero { min-height:510px; padding:86px 0 66px; text-align:center; }
+    .eyebrow,.section-kicker { margin:0 0 20px; color:var(--gold); font-size:10px; font-weight:800; letter-spacing:.35em; text-transform:uppercase; }
+    h1 { margin:0; font:400 clamp(3.3rem,7.5vw,6.8rem)/.95 Georgia,"Noto Serif SC",serif; letter-spacing:-.055em; }
+    h1 em { color:transparent; background:linear-gradient(100deg,#fff3d0,#c89d4d 56%,#ffe8b5); background-clip:text; font-style:italic; }
+    .hero-copy { max-width:590px; margin:25px auto 35px; color:var(--muted); font-size:15px; line-height:1.8; letter-spacing:.04em; }
+    .search-form { width:min(760px,100%); margin:auto; padding:7px; display:flex; align-items:center; gap:8px; border:1px solid rgba(244,217,157,.25); border-radius:18px; background:rgba(13,14,20,.8); box-shadow:0 22px 70px rgba(0,0,0,.38); backdrop-filter:blur(18px); }
+    .search-icon { width:44px; color:var(--gold); font-size:22px; }
+    #searchInput { min-width:0; flex:1; padding:15px 6px; color:var(--text); border:0; outline:0; background:transparent; font-size:16px; }
+    #searchInput::placeholder { color:#656672; }
+    #searchBtn { min-width:132px; padding:15px 22px; border:0; border-radius:12px; color:#17130d; background:linear-gradient(135deg,#f2d89e,#c79542); box-shadow:0 9px 30px rgba(201,151,66,.22); cursor:pointer; font-size:13px; font-weight:800; letter-spacing:.13em; transition:.25s; }
+    #searchBtn:hover { transform:translateY(-2px); filter:brightness(1.08); }
+    #searchBtn:disabled { cursor:wait; filter:saturate(.4); transform:none; }
+    .suggestions { margin-top:22px; display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:9px; }
+    .suggestions>span { color:#666873; font-size:12px; }
+    .suggestion { padding:7px 13px; color:#aaa9ae; border:1px solid rgba(255,255,255,.08); border-radius:999px; background:rgba(255,255,255,.025); cursor:pointer; font-size:12px; }
+    .suggestion:hover { color:var(--gold2); border-color:var(--line); }
+    .results { display:none; padding:14px 0 86px; animation:rise .5s ease both; }
+    .results.show { display:block; }
+    .results-head { padding:25px 0 21px; display:flex; align-items:end; justify-content:space-between; gap:20px; border-top:1px solid var(--line); }
+    .section-kicker { margin-bottom:8px; }
+    .results-title { margin:0; font:400 clamp(1.8rem,4vw,2.75rem) Georgia,"Noto Serif SC",serif; }
+    .results-count { color:#777986; font-size:13px; white-space:nowrap; }
+    .note { margin-bottom:20px; padding:12px 15px; color:#999aa4; border:1px solid rgba(255,255,255,.06); border-radius:11px; background:rgba(255,255,255,.025); font-size:12px; }
+    .note:before { content:"✦"; margin-right:10px; color:var(--gold); }
+    .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }
+    .card { min-width:0; overflow:hidden; border:1px solid rgba(255,255,255,.08); border-radius:18px; background:linear-gradient(155deg,rgba(27,29,39,.97),rgba(13,14,20,.97)); box-shadow:0 16px 46px rgba(0,0,0,.22); transition:.3s; }
+    .card:hover { transform:translateY(-7px); border-color:rgba(217,179,108,.35); box-shadow:0 26px 70px rgba(0,0,0,.42); }
+    .poster-wrap { position:relative; height:260px; display:block; overflow:hidden; background:#0c0d13; }
+    .poster { position:relative; z-index:1; width:100%; height:100%; display:block; object-fit:cover; transition:transform .65s; }
+    .card:hover .poster { transform:scale(1.045); }
+    .placeholder { position:absolute; inset:0; display:grid; place-items:center; color:rgba(244,217,157,.58); background:radial-gradient(circle at 50% 35%,rgba(125,92,255,.24),transparent 35%),linear-gradient(145deg,#171824,#0d0e14); font:italic 54px Georgia,serif; }
+    .shade { position:absolute; z-index:2; inset:0; background:linear-gradient(to top,rgba(8,9,13,.75),transparent 50%); pointer-events:none; }
+    .badge { position:absolute; z-index:3; top:14px; left:14px; padding:7px 10px; color:#fff2d2; border:1px solid rgba(255,255,255,.18); border-radius:999px; background:rgba(8,9,13,.62); backdrop-filter:blur(10px); font-size:9px; font-weight:800; letter-spacing:.16em; }
+    .card-body { padding:20px; }
+    .index { margin-bottom:8px; color:var(--gold); font-size:9px; font-weight:800; letter-spacing:.2em; }
+    .movie-title { min-height:54px; margin:0 0 17px; display:-webkit-box; overflow:hidden; color:#f5f0e8; font:400 20px/1.35 Georgia,"Noto Serif SC",serif; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+    .downloads { min-height:75px; display:flex; flex-direction:column; gap:8px; }
+    .download,.detail { min-width:0; display:flex; align-items:center; justify-content:space-between; gap:12px; color:#bebbc0; text-decoration:none; font-size:12px; transition:.2s; }
+    .download { padding:10px 12px; border:1px solid rgba(255,255,255,.07); border-radius:9px; background:rgba(255,255,255,.025); }
+    .download span:first-child { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .download b { color:var(--gold); font-weight:500; }
+    .download:hover { color:var(--text); border-color:rgba(217,179,108,.26); background:rgba(217,179,108,.06); }
+    .empty { padding:13px 0; color:#62636d; font-size:12px; }
+    .detail { margin-top:16px; padding-top:15px; color:#858690; border-top:1px solid rgba(255,255,255,.07); }
+    .detail:hover { color:var(--gold2); }
+    .pagination { margin-top:34px; display:none; align-items:center; justify-content:center; gap:8px; }
+    .pagination.show { display:flex; }
+    .page { min-width:42px; height:42px; padding:0 14px; color:#a5a5ad; border:1px solid rgba(255,255,255,.08); border-radius:10px; background:rgba(255,255,255,.025); cursor:pointer; }
+    .page:hover:not(:disabled),.page.active { color:#17130d; border-color:var(--gold); background:linear-gradient(135deg,#f2d89e,#c79542); }
+    .page:disabled { opacity:.3; cursor:not-allowed; }
+    .status { grid-column:1/-1; min-height:300px; padding:70px 20px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:#858690; border:1px solid rgba(255,255,255,.06); border-radius:18px; background:rgba(255,255,255,.02); }
+    .status strong { margin-bottom:12px; color:var(--gold); font:italic 48px Georgia,serif; }
+    .status h3 { margin:0 0 8px; color:#ddd6cb; font:400 24px Georgia,serif; }
+    .status p { margin:0; font-size:13px; line-height:1.7; }
+    .skeleton { min-height:430px; border-radius:18px; background:linear-gradient(100deg,#11131a 20%,#1b1d26 45%,#11131a 70%); background-size:250% 100%; animation:shimmer 1.5s infinite; }
+    .footer { padding:27px 0 40px; display:flex; justify-content:space-between; color:#50515a; border-top:1px solid rgba(255,255,255,.05); font-size:10px; letter-spacing:.14em; text-transform:uppercase; }
+    :focus-visible { outline:2px solid var(--gold2); outline-offset:3px; }
+    @keyframes shimmer { to { background-position:-250% 0; } }
+    @keyframes rise { from { opacity:0; transform:translateY(16px); } }
+    @media(max-width:900px) { .grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media(max-width:620px) { .shell{width:calc(100% - 24px)} .topbar{height:72px}.top-meta{display:none}.hero{padding:62px 0 52px}.hero-copy{font-size:13px}.search-icon{display:none}#searchInput{padding-left:12px;font-size:14px}#searchBtn{min-width:96px;padding:14px 12px;letter-spacing:.07em}.results-head{align-items:start;flex-direction:column}.grid{grid-template-columns:1fr;gap:16px}.poster-wrap{height:310px}.movie-title{min-height:auto}.footer{gap:12px;flex-direction:column}.page{min-width:38px;height:38px;padding:0 10px} }
+    @media(prefers-reduced-motion:reduce) { *,*:before,*:after { scroll-behavior:auto!important; animation-duration:.01ms!important; transition-duration:.01ms!important; } }
