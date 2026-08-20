@@ -9,7 +9,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'scripts'))
 
 from gettorrenturl import parse_search_results
-from getdetailedtorrent import parse_magnet_links
+from getdetailedtorrent import parse_movie_detail
 
 app = Flask(__name__)
 CORS(app)
@@ -35,36 +35,23 @@ def search_movies(keyword):
             detail_url = movie.get('url', '')
             
             try:
-                # 解析详情页获取种子链接
-                magnet_links = parse_magnet_links(detail_url)
-                
+                detail = parse_movie_detail(detail_url)
                 result = {
                     'title': movie_title,
                     'detailUrl': detail_url,
-                    'magnetLinks': magnet_links,  # 所有种子链接
-                    'size': '',
-                    'year': '',
-                    'quality': '',
-                    'language': '',
-                    'seeders': '',
-                    'leechers': ''
+                    'posterUrl': detail['posterUrl'],
+                    'downloadLinks': detail['downloadLinks']
                 }
                 results.append(result)
             except Exception as e:
                 print(f"解析电影 {movie_title} 的详情页失败: {e}")
-                # 即使解析失败，仍然返回电影信息（只是没有种子链接）
-                result = {
+                # 即使解析失败，仍然返回电影信息。
+                results.append({
                     'title': movie_title,
                     'detailUrl': detail_url,
-                    'magnetLinks': [],
-                    'size': '',
-                    'year': '',
-                    'quality': '',
-                    'language': '',
-                    'seeders': '',
-                    'leechers': ''
-                }
-                results.append(result)
+                    'posterUrl': '',
+                    'downloadLinks': []
+                })
         
         return results
     except Exception as e:

@@ -1,302 +1,126 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anything - 电影种子搜索</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 800px;
-            margin-top: 80px;
-        }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .logo h1 {
-            color: white;
-            font-size: 48px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .logo p {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 16px;
-            margin-top: 10px;
-        }
-
-        .search-box {
-            background: white;
-            border-radius: 50px;
-            padding: 8px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-            display: flex;
-            margin-bottom: 30px;
-        }
-
-        #searchInput {
-            flex: 1;
-            border: none;
-            outline: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            background: transparent;
-        }
-
-        #searchBtn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 32px;
-            border-radius: 50px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            font-weight: 500;
-        }
-
-        #searchBtn:hover {
-            transform: scale(1.05);
-        }
-
-        #searchBtn:active {
-            transform: scale(0.95);
-        }
-
-        .results {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-            display: none;
-        }
-
-        .results.show {
-            display: block;
-        }
-
-        .results-header {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .results-note {
-            background: #f0f4ff;
-            color: #4a4a75;
-            font-size: 14px;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-        }
-
-        .result-item {
-            padding: 16px;
-            border-bottom: 1px solid #f0f0f0;
-            transition: background 0.2s;
-        }
-
-        .result-item:last-child {
-            border-bottom: none;
-        }
-
-        .result-item:hover {
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-
-        .result-title {
-            font-size: 16px;
-            color: #333;
-            margin-bottom: 12px;
-            font-weight: 500;
-        }
-
-        .magnet-links {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .result-link {
-            display: inline-flex;
-            align-items: center;
-            color: #667eea;
-            text-decoration: none;
-            font-size: 14px;
-            padding: 8px 12px;
-            border: 1px solid #667eea;
-            border-radius: 20px;
-            transition: all 0.2s;
-            word-break: break-all;
-            max-height: 100px;
-            overflow-y: auto;
-        }
-
-        .result-link:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            color: #999;
-            font-size: 16px;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #667eea;
-            font-size: 16px;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                margin-top: 40px;
-            }
-
-            .logo h1 {
-                font-size: 36px;
-            }
-
-            .search-box {
-                flex-direction: column;
-                border-radius: 12px;
-                padding: 12px;
-            }
-
-            #searchInput {
-                margin-bottom: 8px;
-            }
-
-            #searchBtn {
-                width: 100%;
-                border-radius: 8px;
-            }
-
-            .result-info {
-                flex-direction: column;
-                gap: 4px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08090d">
+  <title>Anything — 私享电影典藏</title>
+  <style>
+    :root { --bg:#08090d; --panel:#151720; --gold:#d9b36c; --gold2:#f4d99d; --text:#f7f2e8; --muted:#9697a2; --line:rgba(224,190,121,.18); }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; min-height:100vh; color:var(--text); font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif; background:radial-gradient(circle at 12% 8%,rgba(125,92,255,.2),transparent 31rem),radial-gradient(circle at 88% 22%,rgba(217,179,108,.15),transparent 34rem),linear-gradient(145deg,#07080c,#10111a 52%,#08090d); }
+    body:before { content:""; position:fixed; inset:0; pointer-events:none; opacity:.2; background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px); background-size:48px 48px; mask-image:linear-gradient(to bottom,#000,transparent 72%); }
+    button,input { font:inherit; }
+    .shell { position:relative; z-index:1; width:min(1240px,calc(100% - 40px)); margin:auto; }
+    .topbar { height:86px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,.06); }
+    .brand { display:flex; align-items:center; gap:13px; color:var(--text); text-decoration:none; font:600 14px Georgia,serif; letter-spacing:.18em; }
+    .brand-mark { width:39px; height:39px; display:grid; place-items:center; border:1px solid rgba(244,217,157,.45); border-radius:50%; color:var(--gold2); }
+    .top-meta { color:#70717d; font-size:10px; letter-spacing:.25em; text-transform:uppercase; }
+    .hero { min-height:510px; padding:86px 0 66px; text-align:center; }
+    .eyebrow,.section-kicker { margin:0 0 20px; color:var(--gold); font-size:10px; font-weight:800; letter-spacing:.35em; text-transform:uppercase; }
+    h1 { margin:0; font:400 clamp(3.3rem,7.5vw,6.8rem)/.95 Georgia,"Noto Serif SC",serif; letter-spacing:-.055em; }
+    h1 em { color:transparent; background:linear-gradient(100deg,#fff3d0,#c89d4d 56%,#ffe8b5); background-clip:text; font-style:italic; }
+    .hero-copy { max-width:590px; margin:25px auto 35px; color:var(--muted); font-size:15px; line-height:1.8; letter-spacing:.04em; }
+    .search-form { width:min(760px,100%); margin:auto; padding:7px; display:flex; align-items:center; gap:8px; border:1px solid rgba(244,217,157,.25); border-radius:18px; background:rgba(13,14,20,.8); box-shadow:0 22px 70px rgba(0,0,0,.38); backdrop-filter:blur(18px); }
+    .search-icon { width:44px; color:var(--gold); font-size:22px; }
+    #searchInput { min-width:0; flex:1; padding:15px 6px; color:var(--text); border:0; outline:0; background:transparent; font-size:16px; }
+    #searchInput::placeholder { color:#656672; }
+    #searchBtn { min-width:132px; padding:15px 22px; border:0; border-radius:12px; color:#17130d; background:linear-gradient(135deg,#f2d89e,#c79542); box-shadow:0 9px 30px rgba(201,151,66,.22); cursor:pointer; font-size:13px; font-weight:800; letter-spacing:.13em; transition:.25s; }
+    #searchBtn:hover { transform:translateY(-2px); filter:brightness(1.08); }
+    #searchBtn:disabled { cursor:wait; filter:saturate(.4); transform:none; }
+    .suggestions { margin-top:22px; display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:9px; }
+    .suggestions>span { color:#666873; font-size:12px; }
+    .suggestion { padding:7px 13px; color:#aaa9ae; border:1px solid rgba(255,255,255,.08); border-radius:999px; background:rgba(255,255,255,.025); cursor:pointer; font-size:12px; }
+    .suggestion:hover { color:var(--gold2); border-color:var(--line); }
+    .results { display:none; padding:14px 0 86px; animation:rise .5s ease both; }
+    .results.show { display:block; }
+    .results-head { padding:25px 0 21px; display:flex; align-items:end; justify-content:space-between; gap:20px; border-top:1px solid var(--line); }
+    .section-kicker { margin-bottom:8px; }
+    .results-title { margin:0; font:400 clamp(1.8rem,4vw,2.75rem) Georgia,"Noto Serif SC",serif; }
+    .results-count { color:#777986; font-size:13px; white-space:nowrap; }
+    .note { margin-bottom:20px; padding:12px 15px; color:#999aa4; border:1px solid rgba(255,255,255,.06); border-radius:11px; background:rgba(255,255,255,.025); font-size:12px; }
+    .note:before { content:"✦"; margin-right:10px; color:var(--gold); }
+    .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }
+    .card { min-width:0; overflow:hidden; border:1px solid rgba(255,255,255,.08); border-radius:18px; background:linear-gradient(155deg,rgba(27,29,39,.97),rgba(13,14,20,.97)); box-shadow:0 16px 46px rgba(0,0,0,.22); transition:.3s; }
+    .card:hover { transform:translateY(-7px); border-color:rgba(217,179,108,.35); box-shadow:0 26px 70px rgba(0,0,0,.42); }
+    .poster-wrap { position:relative; height:260px; display:block; overflow:hidden; background:#0c0d13; }
+    .poster { position:relative; z-index:1; width:100%; height:100%; display:block; object-fit:cover; transition:transform .65s; }
+    .card:hover .poster { transform:scale(1.045); }
+    .placeholder { position:absolute; inset:0; display:grid; place-items:center; color:rgba(244,217,157,.58); background:radial-gradient(circle at 50% 35%,rgba(125,92,255,.24),transparent 35%),linear-gradient(145deg,#171824,#0d0e14); font:italic 54px Georgia,serif; }
+    .shade { position:absolute; z-index:2; inset:0; background:linear-gradient(to top,rgba(8,9,13,.75),transparent 50%); pointer-events:none; }
+    .badge { position:absolute; z-index:3; top:14px; left:14px; padding:7px 10px; color:#fff2d2; border:1px solid rgba(255,255,255,.18); border-radius:999px; background:rgba(8,9,13,.62); backdrop-filter:blur(10px); font-size:9px; font-weight:800; letter-spacing:.16em; }
+    .card-body { padding:20px; }
+    .index { margin-bottom:8px; color:var(--gold); font-size:9px; font-weight:800; letter-spacing:.2em; }
+    .movie-title { min-height:54px; margin:0 0 17px; display:-webkit-box; overflow:hidden; color:#f5f0e8; font:400 20px/1.35 Georgia,"Noto Serif SC",serif; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+    .downloads { min-height:75px; display:flex; flex-direction:column; gap:8px; }
+    .download,.detail { min-width:0; display:flex; align-items:center; justify-content:space-between; gap:12px; color:#bebbc0; text-decoration:none; font-size:12px; transition:.2s; }
+    .download { padding:10px 12px; border:1px solid rgba(255,255,255,.07); border-radius:9px; background:rgba(255,255,255,.025); }
+    .download span:first-child { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .download b { color:var(--gold); font-weight:500; }
+    .download:hover { color:var(--text); border-color:rgba(217,179,108,.26); background:rgba(217,179,108,.06); }
+    .empty { padding:13px 0; color:#62636d; font-size:12px; }
+    .detail { margin-top:16px; padding-top:15px; color:#858690; border-top:1px solid rgba(255,255,255,.07); }
+    .detail:hover { color:var(--gold2); }
+    .pagination { margin-top:34px; display:none; align-items:center; justify-content:center; gap:8px; }
+    .pagination.show { display:flex; }
+    .page { min-width:42px; height:42px; padding:0 14px; color:#a5a5ad; border:1px solid rgba(255,255,255,.08); border-radius:10px; background:rgba(255,255,255,.025); cursor:pointer; }
+    .page:hover:not(:disabled),.page.active { color:#17130d; border-color:var(--gold); background:linear-gradient(135deg,#f2d89e,#c79542); }
+    .page:disabled { opacity:.3; cursor:not-allowed; }
+    .status { grid-column:1/-1; min-height:300px; padding:70px 20px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:#858690; border:1px solid rgba(255,255,255,.06); border-radius:18px; background:rgba(255,255,255,.02); }
+    .status strong { margin-bottom:12px; color:var(--gold); font:italic 48px Georgia,serif; }
+    .status h3 { margin:0 0 8px; color:#ddd6cb; font:400 24px Georgia,serif; }
+    .status p { margin:0; font-size:13px; line-height:1.7; }
+    .skeleton { min-height:430px; border-radius:18px; background:linear-gradient(100deg,#11131a 20%,#1b1d26 45%,#11131a 70%); background-size:250% 100%; animation:shimmer 1.5s infinite; }
+    .footer { padding:27px 0 40px; display:flex; justify-content:space-between; color:#50515a; border-top:1px solid rgba(255,255,255,.05); font-size:10px; letter-spacing:.14em; text-transform:uppercase; }
+    :focus-visible { outline:2px solid var(--gold2); outline-offset:3px; }
+    @keyframes shimmer { to { background-position:-250% 0; } }
+    @keyframes rise { from { opacity:0; transform:translateY(16px); } }
+    @media(max-width:900px) { .grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media(max-width:620px) { .shell{width:calc(100% - 24px)} .topbar{height:72px}.top-meta{display:none}.hero{padding:62px 0 52px}.hero-copy{font-size:13px}.search-icon{display:none}#searchInput{padding-left:12px;font-size:14px}#searchBtn{min-width:96px;padding:14px 12px;letter-spacing:.07em}.results-head{align-items:start;flex-direction:column}.grid{grid-template-columns:1fr;gap:16px}.poster-wrap{height:310px}.movie-title{min-height:auto}.footer{gap:12px;flex-direction:column}.page{min-width:38px;height:38px;padding:0 10px} }
+    @media(prefers-reduced-motion:reduce) { *,*:before,*:after { scroll-behavior:auto!important; animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">
-            <h1>Anything</h1>
-            <p>搜索你想要的任何电影</p>
-        </div>
-
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="输入电影名称..." />
-            <button id="searchBtn">搜索</button>
-        </div>
-
-        <div id="results" class="results">
-            <div class="results-header">搜索结果</div>
-            <div id="resultsList"></div>
-        </div>
-    </div>
-
-    <script>
-        const searchInput = document.getElementById('searchInput');
-        const searchBtn = document.getElementById('searchBtn');
-        const results = document.getElementById('results');
-        const resultsList = document.getElementById('resultsList');
-
-        const API_BASE_URL = 'http://localhost:5000/api';
-
-        // 搜索电影
-        async function searchMovies(query) {
-            // 显示加载状态
-            results.classList.add('show');
-            resultsList.innerHTML = '<div class="loading">正在搜索...</div>';
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/search?q=${encodeURIComponent(query)}`);
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error || '搜索失败');
-                }
-
-                const noteHtml = data.note ? `<div class="results-note">${data.note}</div>` : '';
-
-                if (data.results && data.results.length > 0) {
-                    const itemsHtml = data.results.map(item => {
-                        let magnetSection = '';
-
-                        if (item.magnetLinks && item.magnetLinks.length > 0) {
-                            const magnetsHtml = item.magnetLinks.map(link => {
-                                return `<a href="${link.magnet}" class="result-link" title="点击打开磁力链接">${link.title}</a>`;
-                            }).join('');
-                            magnetSection = `<div class="magnet-links">${magnetsHtml}</div>`;
-                        } else {
-                            magnetSection = '<div style="color: #999; font-size: 14px;">未找到种子链接</div>';
-                        }
-
-                        return `
-                            <div class="result-item">
-                                <div class="result-title">${item.title}</div>
-                                ${magnetSection}
-                            </div>
-                        `;
-                    }).join('');
-
-                    resultsList.innerHTML = noteHtml + itemsHtml;
-                } else {
-                    resultsList.innerHTML = noteHtml + '<div class="no-results">未找到相关结果</div>';
-                }
-            } catch (error) {
-                console.error('搜索错误:', error);
-                resultsList.innerHTML = `<div class="no-results">搜索出错: ${error.message}</div>`;
-            }
-        }
-
-        // 搜索按钮点击事件
-        searchBtn.addEventListener('click', () => {
-            const query = searchInput.value.trim();
-            if (query) {
-                searchMovies(query);
-            }
-        });
-
-        // 回车键搜索
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const query = searchInput.value.trim();
-                if (query) {
-                    searchMovies(query);
-                }
-            }
-        });
-    </script>
+  <main class="shell">
+    <nav class="topbar"><a class="brand" href="#top"><span class="brand-mark">A</span><span>ANYTHING</span></a><span class="top-meta">Private Cinema Collection · 2026</span></nav>
+    <section class="hero" id="top">
+      <p class="eyebrow">Curated cinema archive</p>
+      <h1>探索银幕里的<br><em>无限世界</em></h1>
+      <p class="hero-copy">从经典到新作，以更优雅的方式发现电影。输入片名，即刻开启你的私人放映清单。</p>
+      <form class="search-form" id="searchForm" role="search">
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input id="searchInput" type="search" maxlength="80" autocomplete="off" placeholder="搜索电影、剧集或纪录片…" aria-label="电影名称">
+        <button id="searchBtn" type="submit">开始探索</button>
+      </form>
+      <div class="suggestions"><span>热门灵感</span><button class="suggestion" data-query="阿凡达" type="button">阿凡达</button><button class="suggestion" data-query="繁花" type="button">繁花</button><button class="suggestion" data-query="流浪地球" type="button">流浪地球</button><button class="suggestion" data-query="新闻女王" type="button">新闻女王</button></div>
+    </section>
+    <section class="results" id="results" aria-live="polite">
+      <header class="results-head"><div><p class="section-kicker">SEARCH COLLECTION</p><h2 class="results-title" id="resultsTitle">为你甄选</h2></div><span class="results-count" id="resultsCount"></span></header>
+      <div class="note" id="resultsNote" hidden></div>
+      <div class="grid" id="resultsGrid"></div>
+      <nav class="pagination" id="pagination" aria-label="搜索结果分页"></nav>
+    </section>
+    <footer class="footer"><span>Anything · Cinema discovery</span><span>第三方结果仅供检索参考</span></footer>
+  </main>
+  <script>
+    const PAGE_SIZE=6;
+    const API_BASE_URL=(location.protocol.indexOf('http')===0?location.protocol+'//'+location.hostname+':5000/api':'http://127.0.0.1:5000/api');
+    const state={items:[],page:1,query:'',controller:null};
+    const $=function(id){return document.getElementById(id)};
+    const form=$('searchForm'),input=$('searchInput'),submit=$('searchBtn'),section=$('results'),grid=$('resultsGrid'),title=$('resultsTitle'),count=$('resultsCount'),note=$('resultsNote'),pager=$('pagination');
+    function el(tag,cls,text){const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node}
+    function safeUrl(value,protocols){try{const url=new URL(value,location.href);return protocols.includes(url.protocol)?url.href:''}catch(e){return''}}
+    function loading(){section.classList.add('show');title.textContent='正在为你搜寻';count.textContent='COLLECTING';note.hidden=true;pager.classList.remove('show');pager.replaceChildren();grid.replaceChildren(...Array.from({length:6},function(){return el('div','skeleton')}))}
+    function status(heading,message,symbol){const box=el('div','status');box.append(el('strong','',symbol),el('h3','',heading),el('p','',message));grid.replaceChildren(box);pager.classList.remove('show');pager.replaceChildren()}
+    function poster(item,detailUrl){const wrap=detailUrl?el('a','poster-wrap'):el('div','poster-wrap');if(detailUrl){wrap.href=detailUrl;wrap.target='_blank';wrap.rel='noopener noreferrer'}const fallback=el('div','placeholder','A');const url=safeUrl(item.posterUrl,['http:','https:']);if(url){const img=el('img','poster');img.src=url;img.alt=item.title?'《'+item.title+'》海报':'电影海报';img.loading='lazy';img.referrerPolicy='no-referrer';img.addEventListener('load',function(){fallback.remove()},{once:true});img.addEventListener('error',function(){img.remove()},{once:true});wrap.append(img)}wrap.append(fallback,el('div','shade'),el('span','badge','CINEMA PICK'));return wrap}
+    function card(item,index){const article=el('article','card');const detailUrl=safeUrl(item.detailUrl,['http:','https:']);article.append(poster(item,detailUrl));const body=el('div','card-body');body.append(el('div','index','SELECTION '+String(index+1).padStart(2,'0')),el('h3','movie-title',item.title||'未命名影片'));const list=el('div','downloads');const links=(Array.isArray(item.downloadLinks)?item.downloadLinks:[]).map(function(link){const protocols=link.type==='magnet'?['magnet:']:['http:','https:'];return Object.assign({},link,{safe:safeUrl(link.url,protocols)})}).filter(function(link){return link.safe});if(links.length){links.slice(0,2).forEach(function(link,i){const a=el('a','download');a.href=link.safe;a.title=link.title||'打开资源链接';if(link.type!=='magnet'){a.target='_blank';a.rel='noopener noreferrer'}a.append(el('span','',link.title||(link.type==='magnet'?'磁力链接':'种子文件')),el('b','',link.type==='magnet'?'MAG '+(i+1):'TORRENT'));list.append(a)})}else{list.append(el('div','empty','暂未发现可用资源链接'))}body.append(list);if(detailUrl){const a=el('a','detail');a.href=detailUrl;a.target='_blank';a.rel='noopener noreferrer';a.append(el('span','','查看来源详情'),el('span','','↗'));body.append(a)}article.append(body);return article}
+    function pageButton(label,target,disabled,active){const button=el('button','page'+(active?' active':''),label);button.type='button';button.disabled=disabled;if(active)button.setAttribute('aria-current','page');button.addEventListener('click',function(){state.page=target;render();section.scrollIntoView({behavior:'smooth'})});return button}
+    function pagination(total){pager.replaceChildren();if(total<=1){pager.classList.remove('show');return}pager.append(pageButton('上一页',state.page-1,state.page===1,false));for(let p=1;p<=total;p++)pager.append(pageButton(String(p),p,false,p===state.page));pager.append(pageButton('下一页',state.page+1,state.page===total,false));pager.classList.add('show')}
+    function render(message){const total=state.items.length,pages=Math.max(1,Math.ceil(total/PAGE_SIZE));state.page=Math.min(state.page,pages);const start=(state.page-1)*PAGE_SIZE,visible=state.items.slice(start,start+PAGE_SIZE);title.textContent=state.query?'“'+state.query+'” 的甄选结果':'为你甄选';count.textContent=total?total+' 部作品 · 第 '+state.page+' / '+pages+' 页':'0 部作品';note.textContent=message||'';note.hidden=!message;if(!visible.length){status('未找到相关作品','换一个关键词试试，也许会遇见另一部值得收藏的电影。','∅');return}grid.replaceChildren(...visible.map(function(item,i){return card(item,start+i)}));pagination(pages)}
+    async function search(query){query=query.trim();if(!query){input.focus();return}if(state.controller)state.controller.abort();state.controller=new AbortController();state.query=query;state.page=1;submit.disabled=true;submit.textContent='搜寻中…';loading();section.scrollIntoView({behavior:'smooth'});try{const response=await fetch(API_BASE_URL+'/search?q='+encodeURIComponent(query),{signal:state.controller.signal,headers:{Accept:'application/json'}});const data=await response.json();if(!response.ok)throw new Error(data.error||'搜索服务暂时不可用');state.items=Array.isArray(data.results)?data.results:[];render(typeof data.note==='string'?data.note:'')}catch(error){if(error.name==='AbortError')return;state.items=[];title.textContent='搜索暂时中断';count.textContent='PLEASE RETRY';status('未能完成搜索',error.message||'请稍后重试。','!')}finally{submit.disabled=false;submit.textContent='开始探索'}}
+    form.addEventListener('submit',function(event){event.preventDefault();search(input.value)});
+    document.querySelectorAll('.suggestion').forEach(function(button){button.addEventListener('click',function(){input.value=button.dataset.query;search(button.dataset.query)})});
+  </script>
 </body>
 </html>
