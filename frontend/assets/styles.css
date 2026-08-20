@@ -46,14 +46,12 @@
     .index { margin-bottom:8px; color:var(--gold); font-size:9px; font-weight:800; letter-spacing:.2em; }
     .movie-title { min-height:54px; margin:0 0 17px; display:-webkit-box; overflow:hidden; color:#f5f0e8; font:400 20px/1.35 Georgia,"Noto Serif SC",serif; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
     .downloads { min-height:75px; display:flex; flex-direction:column; gap:8px; }
-    .download,.detail { min-width:0; display:flex; align-items:center; justify-content:space-between; gap:12px; color:#bebbc0; text-decoration:none; font-size:12px; transition:.2s; }
+    .download { min-width:0; display:flex; align-items:center; justify-content:space-between; gap:12px; color:#bebbc0; text-decoration:none; font-size:12px; transition:.2s; }
     .download { padding:10px 12px; border:1px solid rgba(255,255,255,.07); border-radius:9px; background:rgba(255,255,255,.025); }
     .download span:first-child { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .download b { color:var(--gold); font-weight:500; }
     .download:hover { color:var(--text); border-color:rgba(217,179,108,.26); background:rgba(217,179,108,.06); }
     .empty { padding:13px 0; color:#62636d; font-size:12px; }
-    .detail { margin-top:16px; padding-top:15px; color:#858690; border-top:1px solid rgba(255,255,255,.07); }
-    .detail:hover { color:var(--gold2); }
     .pagination { margin-top:34px; display:none; align-items:center; justify-content:center; gap:8px; }
     .pagination.show { display:flex; }
     .page { min-width:42px; height:42px; padding:0 14px; color:#a5a5ad; border:1px solid rgba(255,255,255,.08); border-radius:10px; background:rgba(255,255,255,.025); cursor:pointer; }
