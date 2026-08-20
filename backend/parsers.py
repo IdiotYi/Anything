@@ -39,13 +39,21 @@ class MovieDetailParser(HTMLParser):
             return
 
         href = attributes.get("href", "").strip()
-        absolute_url = urljoin(self.detail_url, href)
-        lower_url = absolute_url.lower()
+        lower_href = href.lower()
         link_type = None
-        if lower_url.startswith("magnet:"):
+        if lower_href.startswith("magnet:"):
+            # Keep custom protocol URLs verbatim. urljoin/urlparse can misread
+            # brackets inside ED2K file names as an IPv6 host.
+            absolute_url = href
             link_type = "magnet"
-        elif urlparse(absolute_url).scheme in {"http", "https"} and ".torrent" in lower_url:
-            link_type = "torrent"
+        elif lower_href.startswith("ed2k://"):
+            absolute_url = href
+            link_type = "ed2k"
+        else:
+            absolute_url = urljoin(self.detail_url, href)
+            lower_url = absolute_url.lower()
+            if urlparse(absolute_url).scheme in {"http", "https"} and ".torrent" in lower_url:
+                link_type = "torrent"
         if link_type:
             self._active_download = {"type": link_type, "url": absolute_url}
             self._active_text = []
@@ -58,9 +66,12 @@ class MovieDetailParser(HTMLParser):
         if tag.lower() != "a" or self._active_download is None:
             return
         title = " ".join("".join(self._active_text).split())
-        self._active_download["title"] = title or (
-            "磁力链接" if self._active_download["type"] == "magnet" else "种子文件"
-        )
+        default_titles = {
+            "magnet": "磁力链接",
+            "ed2k": "ED2K 链接",
+            "torrent": "种子文件",
+        }
+        self._active_download["title"] = title or default_titles[self._active_download["type"]]
         self.download_links.append(self._active_download)
         self._active_download = None
         self._active_text = []

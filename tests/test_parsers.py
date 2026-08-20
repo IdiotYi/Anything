@@ -24,6 +24,22 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(detail["downloadLinks"][0]["type"], "magnet")
         self.assertEqual(detail["downloadLinks"][0]["url"], "magnet:?xt=urn:btih:ABC&dn=Avatar")
 
+    def test_extracts_multiple_ed2k_links(self):
+        first = "ed2k://|file|movie[www.66e.cc].mp4|2099577975|78FBDEFE0CFC5AEFDA6C22F8EE353A70|/"
+        second = "ed2k://|file|movie[www.66e.cc].mkv|1665897903|696A30A01CD539908B321B8246381C62|/"
+        detail = parse_movie_page(
+            f"<a href='{first}'>斯隆女士.mp4</a><a href='{second}'>斯隆女士.mkv</a>",
+            "https://www.dygangs.me/bd/20170313/36866.htm",
+        )
+
+        self.assertEqual(
+            detail["downloadLinks"],
+            [
+                {"type": "ed2k", "url": first, "title": "斯隆女士.mp4"},
+                {"type": "ed2k", "url": second, "title": "斯隆女士.mkv"},
+            ],
+        )
+
     def test_normalizes_relative_torrent_url(self):
         detail = parse_movie_page(
             "<a href='../downloads/avatar.torrent'>下载种子</a>",
