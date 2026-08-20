@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -40,9 +40,17 @@ jobs:
 
       - name: Reject development-only API URLs
         run: |
-          if grep -R --line-number --fixed-strings "http://127.0.0.1:5000/api" frontend; then
+          set -euo pipefail
+          if matches=$(grep -R --line-number --fixed-strings "http://127.0.0.1:5000/api" frontend); then
+            printf '%s\n' "$matches"
             echo "Frontend must use the same-origin /api endpoint." >&2
             exit 1
+          else
+            status=$?
+            if [ "$status" -ne 1 ]; then
+              echo "Failed to scan frontend sources." >&2
+              exit "$status"
+            fi
           fi
 
       - name: Build production image

@@ -104,7 +104,7 @@ az containerapp registry set \
   --identity system
 ```
 
-The first Container App can be created with a temporary public image. The first successful CD run replaces it with the immutable Anything image from ACR.
+The first Container App can be created with a temporary public image. The deployment workflow enables external ingress on port `8000`, applies the cost cap of zero-to-one replicas, and then replaces the temporary image with the immutable Anything image from ACR.
 
 ## GitHub workflow behavior
 

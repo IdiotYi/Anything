@@ -50,6 +50,11 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(response.get_json(), {"status": "ok"})
         self.assertEqual(self.service.search_calls, 0)
 
+    def test_version_check_reports_development_by_default(self):
+        response = self.client.get("/versionz")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json(), {"revision": "development"})
+
     def test_search_returns_lightweight_results(self):
         response = self.client.get("/api/search?q=复仇者联盟")
         self.assertEqual(response.status_code, 200)

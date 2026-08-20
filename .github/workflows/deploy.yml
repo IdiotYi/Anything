@@ -84,6 +84,14 @@ jobs:
             --resource-group "$RESOURCE_GROUP" \
             --mode single \
             --output none
+          az containerapp ingress enable \
+            --name "$CONTAINER_APP" \
+            --resource-group "$RESOURCE_GROUP" \
+            --type external \
+            --target-port 8000 \
+            --transport auto \
+            --allow-insecure false \
+            --output none
 
       - name: Build and push immutable image in ACR
         env:
@@ -113,7 +121,10 @@ jobs:
             --name "$CONTAINER_APP" \
             --resource-group "$RESOURCE_GROUP" \
             --image "${LOGIN_SERVER}/${IMAGE_REPOSITORY}:${DEPLOY_SHA}" \
-            --revision-suffix "sha-${DEPLOY_SHA::8}-${GITHUB_RUN_ATTEMPT}" \
+            --revision-suffix "r${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --set-env-vars "DEPLOY_SHA=${DEPLOY_SHA}" \
+            --min-replicas 0 \
+            --max-replicas 1 \
             --output none
 
           DEPLOYED_REVISION=$(az containerapp show \
@@ -121,6 +132,27 @@ jobs:
             --resource-group "$RESOURCE_GROUP" \
             --query properties.latestRevisionName --output tsv)
           test -n "$DEPLOYED_REVISION"
+
+          for attempt in {1..30}; do
+            READY_REVISION=$(az containerapp show \
+              --name "$CONTAINER_APP" \
+              --resource-group "$RESOURCE_GROUP" \
+              --query properties.latestReadyRevisionName --output tsv)
+            if [ "$READY_REVISION" = "$DEPLOYED_REVISION" ]; then
+              echo "Revision ${DEPLOYED_REVISION} is ready."
+              break
+            fi
+            if [ "$attempt" -eq 30 ]; then
+              echo "Revision ${DEPLOYED_REVISION} did not become ready." >&2
+              az containerapp revision show \
+                --name "$CONTAINER_APP" \
+                --resource-group "$RESOURCE_GROUP" \
+                --revision "$DEPLOYED_REVISION" \
+                --output json
+              exit 1
+            fi
+            sleep 10
+          done
           echo "DEPLOYED_REVISION=$DEPLOYED_REVISION" >> "$GITHUB_ENV"
 
       - name: Resolve production endpoint
@@ -164,8 +196,10 @@ jobs:
           test "$REVISION_ACTIVE" = "true"
 
           for attempt in {1..18}; do
-            if curl --fail --silent --show-error --max-time 10 "${URL}/healthz" | grep -q '"status":"ok"'; then
-              echo "Deployment is healthy at ${URL}"
+            HEALTH=$(curl --fail --silent --show-error --max-time 10 "${URL}/healthz" || true)
+            VERSION=$(curl --fail --silent --show-error --max-time 10 "${URL}/versionz" || true)
+            if grep -q '"status":"ok"' <<<"$HEALTH" && grep -q "${DEPLOY_SHA}" <<<"$VERSION"; then
+              echo "Deployment ${DEPLOY_SHA} is healthy at ${URL}"
               exit 0
             fi
             echo "Health check attempt ${attempt}/18 failed; retrying in 10 seconds..."

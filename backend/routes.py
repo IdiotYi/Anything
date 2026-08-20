@@ -1,5 +1,6 @@
 """HTTP routes for the Anything API."""
 
+import os
 import time
 
 from flask import Blueprint, current_app, jsonify, request, send_from_directory
@@ -66,6 +67,12 @@ def details():
 def health():
     """Liveness endpoint used by the container platform and deployments."""
     return jsonify({"status": "ok"})
+
+
+@api.get("/versionz")
+def version():
+    """Expose the immutable deployment revision for rollout verification."""
+    return jsonify({"revision": os.getenv("DEPLOY_SHA", "development")})
 
 
 @api.get("/")
