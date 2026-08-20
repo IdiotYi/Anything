@@ -1,9 +1,12 @@
-"""Run the local Anything API with python -m backend."""
+"""Run Anything locally with ``python -m backend``."""
+
+import os
 
 from .app import app
 
 
 if __name__ == "__main__":
-    print("Anything API: http://127.0.0.1:5000")
-    print("Frontend: http://127.0.0.1:8000")
-    app.run(host="127.0.0.1", port=5000, debug=False, threaded=True)
+    host = os.getenv("HOST", "127.0.0.1")
+    port = int(os.getenv("PORT", "8000"))
+    print(f"Anything: http://{host}:{port}")
+    app.run(host=host, port=port, debug=False, threaded=True)

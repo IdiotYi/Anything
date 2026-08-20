@@ -2,7 +2,7 @@
 
 import time
 
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, current_app, jsonify, request, send_from_directory
 
 from .config import MAX_DETAIL_BATCH, MAX_QUERY_LENGTH
 from .upstream import is_allowed_detail_url
@@ -62,9 +62,13 @@ def details():
     })
 
 
+@api.get("/healthz")
+def health():
+    """Liveness endpoint used by the container platform and deployments."""
+    return jsonify({"status": "ok"})
+
+
 @api.get("/")
 def index():
-    return jsonify({
-        "name": "Anything API",
-        "endpoints": ["GET /api/search?q=电影名", "POST /api/details"],
-    })
+    """Serve the browser application from the same origin as the API."""
+    return send_from_directory(current_app.config["FRONTEND_DIR"], "index.html")

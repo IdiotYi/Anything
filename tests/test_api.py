@@ -31,6 +31,25 @@ class ApiTests(unittest.TestCase):
         self.service = FakeService()
         self.client = create_app(self.service).test_client()
 
+    def test_index_serves_frontend_from_api_origin(self):
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"<!DOCTYPE html>", response.data)
+        self.assertEqual(response.headers["X-Content-Type-Options"], "nosniff")
+        response.close()
+
+    def test_static_assets_are_served(self):
+        response = self.client.get("/assets/app.js")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"const API_BASE_URL='/api'", response.data)
+        response.close()
+
+    def test_health_check_is_dependency_free(self):
+        response = self.client.get("/healthz")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json(), {"status": "ok"})
+        self.assertEqual(self.service.search_calls, 0)
+
     def test_search_returns_lightweight_results(self):
         response = self.client.get("/api/search?q=复仇者联盟")
         self.assertEqual(response.status_code, 200)

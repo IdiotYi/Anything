@@ -1,5 +1,5 @@
 const PAGE_SIZE=6;
-    const API_BASE_URL='http://127.0.0.1:5000/api';
+    const API_BASE_URL='/api';
     const state={items:[],page:1,query:'',controller:null,detailsController:null,note:''};
     const $=function(id){return document.getElementById(id)};
     const form=$('searchForm'),input=$('searchInput'),submit=$('searchBtn'),section=$('results'),grid=$('resultsGrid'),title=$('resultsTitle'),count=$('resultsCount'),note=$('resultsNote'),pager=$('pagination');

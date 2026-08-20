@@ -1,6 +1,16 @@
-"""Application constants that are safe to keep in source control."""
+"""Application configuration loaded from safe defaults and environment values."""
 
-UPSTREAM_BASE_URL = "https://www.dygangs.me"
+import os
+
+
+def _csv_env(name, default=()):
+    value = os.getenv(name)
+    if value is None:
+        return tuple(default)
+    return tuple(item.strip() for item in value.split(",") if item.strip())
+
+
+UPSTREAM_BASE_URL = os.getenv("UPSTREAM_BASE_URL", "https://www.dygangs.me").rstrip("/")
 ALLOWED_DETAIL_HOSTS = frozenset({"www.dygangs.me", "dygangs.me"})
 
 SEARCH_CACHE_TTL_SECONDS = 5 * 60
@@ -14,7 +24,6 @@ DETAIL_WORKERS = 6
 MAX_QUERY_LENGTH = 80
 REQUEST_TIMEOUT = (4, 10)
 
-CORS_ORIGINS = (
-    "http://127.0.0.1:8000",
-    "http://localhost:8000",
-)
+# The production UI is same-origin and needs no CORS. Set this only when a
+# separately hosted development frontend must call the API.
+CORS_ORIGINS = _csv_env("CORS_ORIGINS")

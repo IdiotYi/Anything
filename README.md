@@ -70,25 +70,24 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-### 2. 启动后端
+### 2. 启动应用
 
-从项目根目录运行：
-
-```powershell
-python -m backend.app
-```
-
-后端地址：<http://127.0.0.1:5000>
-
-### 3. 启动前端
-
-另开一个终端：
+前端与 API 由同一个 Flask 应用提供，避免生产环境跨域配置：
 
 ```powershell
-python -m http.server 8000 --directory frontend --bind 127.0.0.1
+python -m backend
 ```
 
-浏览器访问：<http://127.0.0.1:8000>
+浏览器访问：<http://127.0.0.1:8000>，健康检查地址为 <http://127.0.0.1:8000/healthz>。如需使用单独的开发前端，可通过 `CORS_ORIGINS` 环境变量显式允许来源，参考 `.env.example`。
+
+### 3. 使用生产容器
+
+```powershell
+docker build -t anything:local .
+docker run --rm -p 8000:8000 anything:local
+```
+
+容器以非 root 用户运行，并由 Gunicorn 在 `8000` 端口同时提供前端和 API。
 
 ## API
 
@@ -156,7 +155,15 @@ git diff --cached
 
 - 详情接口仅接受配置中的 HTTPS 上游域名，并限制每批最多六个 URL。
 - 前端使用 DOM API 和协议白名单渲染第三方内容。
-- 当前服务器是本地开发服务器；生产部署应使用正式 WSGI 服务并配置严格的来源、速率与网络策略。
+- 生产镜像使用 Gunicorn、非 root 用户、同源 API、健康检查及基础安全响应头；公网部署仍应在 Cloudflare/Azure 层配置速率限制和网络策略。
+
+## CI/CD 与 Azure 部署
+
+- `.github/workflows/ci.yml`：在 Pull Request 和 `master` push 上执行 Python 编译、单元测试、开发 URL 检查和生产镜像构建。
+- `.github/workflows/deploy.yml`：CI 成功后通过 GitHub OIDC 登录 Azure，在 ACR 中构建 commit SHA 镜像，更新 Azure Container Apps revision，并验证 `/healthz`。
+- Azure 资源、GitHub Environment、OIDC、Cloudflare 域名和回滚配置参见 [`docs/azure-cicd.md`](docs/azure-cicd.md)。
+
+部署前不要提交任何 Azure 密钥；流水线只使用短期 OIDC 凭据。
 
 ## 已知限制
 
