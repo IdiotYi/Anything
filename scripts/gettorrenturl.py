@@ -13,12 +13,13 @@ RESULT_LINK_PATTERN = re.compile(
 )
 
 
-def _fetch_html(search_url: str) -> str:
+def _fetch_html(search_url: str, session=None) -> str:
 	"""Download the search result page and return decoded HTML."""
 	headers = {
 		"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
 	}
-	resp = requests.get(search_url, headers=headers, timeout=10)
+	client = session or requests
+	resp = client.get(search_url, headers=headers, timeout=(4, 10))
 	resp.raise_for_status()
 
 	# Site declares gb2312; gbk handles it and is forgiving on mixed pages.
@@ -29,9 +30,9 @@ def _fetch_html(search_url: str) -> str:
 		return resp.text
 
 
-def parse_search_results(search_url: str) -> List[Dict[str, str]]:
+def parse_search_results(search_url: str, session=None) -> List[Dict[str, str]]:
 	"""Parse a dygang search result page and return movie titles with detail links."""
-	html = _fetch_html(search_url)
+	html = _fetch_html(search_url, session=session)
 	results: List[Dict[str, str]] = []
 
 	for href, raw_title in RESULT_LINK_PATTERN.findall(html):
