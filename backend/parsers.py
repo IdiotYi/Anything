@@ -42,13 +42,16 @@ class MovieDetailParser(HTMLParser):
         lower_href = href.lower()
         link_type = None
         if lower_href.startswith("magnet:"):
-            # Keep custom protocol URLs verbatim. urljoin/urlparse can misread
-            # brackets inside ED2K file names as an IPv6 host.
+            # Keep non-HTTP download URLs verbatim. urljoin/urlparse can misread
+            # credentials or brackets inside resource names as host syntax.
             absolute_url = href
             link_type = "magnet"
         elif lower_href.startswith("ed2k://"):
             absolute_url = href
             link_type = "ed2k"
+        elif lower_href.startswith("ftp://"):
+            absolute_url = href
+            link_type = "ftp"
         else:
             absolute_url = urljoin(self.detail_url, href)
             lower_url = absolute_url.lower()
@@ -69,6 +72,7 @@ class MovieDetailParser(HTMLParser):
         default_titles = {
             "magnet": "磁力链接",
             "ed2k": "ED2K 链接",
+            "ftp": "FTP 下载",
             "torrent": "种子文件",
         }
         self._active_download["title"] = title or default_titles[self._active_download["type"]]

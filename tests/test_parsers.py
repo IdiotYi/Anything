@@ -40,6 +40,28 @@ class ParserTests(unittest.TestCase):
             ],
         )
 
+    def test_extracts_ftp_links_with_credentials_and_encoded_paths(self):
+        first = (
+            "ftp://6vhao.com:6vhao.net@ftp15.66ys.org:2628/"
+            "%E6%B2%99%E6%B5%B7%E6%BC%82%E6%B5%81%E4%BA%BA.mkv"
+        )
+        second = (
+            "ftp://dy131.com:6vdy.com@ftp2.66e.cc:6520/"
+            "%E5%8D%91%E8%B4%B1%E4%BA%BA%E7%94%9F.rmvb"
+        )
+        detail = parse_movie_page(
+            f"<a href='{first}'>沙海漂流人</a><a href='{second}'></a>",
+            "https://www.dygangs.me/ys/movie.htm",
+        )
+
+        self.assertEqual(
+            detail["downloadLinks"],
+            [
+                {"type": "ftp", "url": first, "title": "沙海漂流人"},
+                {"type": "ftp", "url": second, "title": "FTP 下载"},
+            ],
+        )
+
     def test_normalizes_relative_torrent_url(self):
         detail = parse_movie_page(
             "<a href='../downloads/avatar.torrent'>下载种子</a>",

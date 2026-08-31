@@ -29,6 +29,16 @@
     </section>
     <footer class="footer"><span>Anything · Cinema discovery</span><span>第三方结果仅供检索参考</span></footer>
   </main>
+  <div class="resource-modal" id="resourceModal" hidden>
+    <div class="resource-backdrop" data-modal-close></div>
+    <section class="resource-dialog" role="dialog" aria-modal="true" aria-labelledby="resourceModalTitle" tabindex="-1">
+      <header class="resource-dialog-head">
+        <div><p class="section-kicker">ALL DOWNLOADS</p><h2 id="resourceModalTitle">全部可用资源</h2><p id="resourceModalCount"></p></div>
+        <button class="resource-close" id="resourceModalClose" type="button" aria-label="关闭全部资源窗口">×</button>
+      </header>
+      <div class="resource-list" id="resourceModalList"></div>
+    </section>
+  </div>
   <script src="assets/app.js" defer></script>
 </body>
 </html>

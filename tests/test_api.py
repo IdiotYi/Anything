@@ -41,7 +41,9 @@ class ApiTests(unittest.TestCase):
     def test_static_assets_are_served(self):
         response = self.client.get("/assets/app.js")
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"const API_BASE_URL='/api'", response.data)
+        self.assertIn(b"const API_BASE_URL = '/api'", response.data)
+        self.assertIn(b"ftp: { protocols: ['ftp:']", response.data)
+        self.assertIn(b"Show More", response.data)
         response.close()
 
     def test_health_check_is_dependency_free(self):
