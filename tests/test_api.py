@@ -26,6 +26,24 @@ class FakeService:
         } for url in urls], 0
 
 
+
+class FakeBookService:
+    def __init__(self):
+        self.search_calls = 0
+
+    def search(self, keyword):
+        self.search_calls += 1
+        return [{
+            "title": keyword,
+            "coverUrl": "https://example.com/cover.jpg",
+            "author": "测试作者",
+            "format": "EPUB",
+            "filesize": "2.5 MB",
+            "language": "中文",
+            "downloadUrl": "https://zh.z-library.sk/dl/12345",
+            "detailUrl": "https://zh.z-library.sk/book/12345",
+        }], False
+
 class ApiTests(unittest.TestCase):
     def setUp(self):
         self.service = FakeService()
@@ -78,6 +96,25 @@ class ApiTests(unittest.TestCase):
             400,
         )
 
+
+
+    def test_book_search_returns_results(self):
+        book_service = FakeBookService()
+        client = create_app(self.service, book_service=book_service).test_client()
+        response = client.get("/api/books/search?q=明朝那些事儿")
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertTrue(data["success"])
+        self.assertEqual(data["count"], 1)
+        book = data["results"][0]
+        self.assertEqual(book["title"], "明朝那些事儿")
+        self.assertEqual(book["author"], "测试作者")
+        self.assertEqual(book["format"], "EPUB")
+        self.assertEqual(book["filesize"], "2.5 MB")
+        self.assertEqual(book["language"], "中文")
+        self.assertEqual(book["downloadUrl"], "https://zh.z-library.sk/dl/12345")
+        self.assertEqual(book["coverUrl"], "https://example.com/cover.jpg")
+        self.assertEqual(len(book["downloadLinks"]), 1)
 
 if __name__ == "__main__":
     unittest.main()

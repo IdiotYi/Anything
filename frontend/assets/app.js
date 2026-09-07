@@ -298,7 +298,7 @@ form.addEventListener('submit', function (event) {
   event.preventDefault();
   search(input.value);
 });
-document.querySelectorAll('.suggestion').forEach(function (button) {
+document.querySelectorAll('#moviesPanel .suggestion').forEach(function (button) {
   button.addEventListener('click', function () {
     input.value = button.dataset.query;
     search(button.dataset.query);

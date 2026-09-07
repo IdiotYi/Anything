@@ -63,6 +63,62 @@ def details():
     })
 
 
+
+
+def _book_service():
+    return current_app.extensions["book_service"]
+
+
+@api.get("/api/books/search")
+def search_books():
+    keyword = request.args.get("q", "").strip()
+    if not keyword:
+        return jsonify({"error": "请提供搜索关键词"}), 400
+    if len(keyword) > MAX_QUERY_LENGTH:
+        return jsonify({"error": f"搜索关键词不能超过 {MAX_QUERY_LENGTH} 个字符"}), 400
+
+    started = time.perf_counter()
+    try:
+        results, cached = _book_service().search(keyword)
+    except Exception as exc:  # noqa: BLE001
+        current_app.logger.warning("book search failed: %s", exc)
+        return jsonify({"error": "电子书搜索服务暂时不可用"}), 502
+
+    # Map results to frontend expected structure
+    formatted_results = []
+    for book in results:
+        download_links = []
+        if book.get("downloadUrl"):
+            format_name = book.get("format") or "下载"
+            size_str = f" ({book['filesize']})" if book.get("filesize") else ""
+            download_links.append({
+                "title": f"下载 {format_name}{size_str}".strip(),
+                "format": format_name,
+                "url": book["downloadUrl"],
+            })
+
+        formatted_results.append({
+            "title": book.get("title", "未知书名"),
+            "author": book.get("author", "未知作者"),
+            "coverUrl": book.get("coverUrl", ""),
+            "format": book.get("format", ""),
+            "filesize": book.get("filesize", ""),
+            "language": book.get("language", ""),
+            "downloadUrl": book.get("downloadUrl", ""),
+            "detailUrl": book.get("detailUrl", ""),
+            "downloadLinks": download_links,
+        })
+
+    return jsonify({
+        "success": True,
+        "keyword": keyword,
+        "count": len(formatted_results),
+        "results": formatted_results,
+        "cached": cached,
+        "elapsedMs": round((time.perf_counter() - started) * 1000),
+    })
+
+
 @api.get("/healthz")
 def health():
     """Liveness endpoint used by the container platform and deployments."""

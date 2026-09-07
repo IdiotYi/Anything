@@ -2,3 +2,6 @@ flask==3.0.0
 flask-cors==4.0.0
 gunicorn==22.0.0
 requests==2.31.0
+curl_cffi==0.16.3
+beautifulsoup4==4.12.2
+lxml==6.1.3

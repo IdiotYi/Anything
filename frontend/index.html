@@ -4,12 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#08090d">
-  <title>Anything — 私享电影典藏</title>
+  <title>Anything — 影视与电子书典藏</title>
   <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
   <main class="shell">
     <nav class="topbar"><a class="brand" href="#top"><span class="brand-mark">A</span><span>ANYTHING</span></a><span class="top-meta">Private Cinema Collection · 2026</span></nav>
+    <div class="collection-tabs" role="tablist" aria-label="资源分类">
+      <button class="collection-tab" id="moviesTab" type="button" role="tab" aria-selected="true" aria-controls="moviesPanel">影视 <span>CINEMA</span></button>
+      <button class="collection-tab" id="booksTab" type="button" role="tab" aria-selected="false" aria-controls="booksPanel" tabindex="-1">电子书 <span>BOOKS</span></button>
+    </div>
+    <div id="moviesPanel" role="tabpanel" aria-labelledby="moviesTab">
     <section class="hero" id="top">
       <p class="eyebrow">Curated cinema archive</p>
       <h1>探索银幕里的<br><em>无限世界</em></h1>
@@ -27,7 +32,27 @@
       <div class="grid" id="resultsGrid"></div>
       <nav class="pagination" id="pagination" aria-label="搜索结果分页"></nav>
     </section>
-    <footer class="footer"><span>Anything · Cinema discovery</span><span>第三方结果仅供检索参考</span></footer>
+    </div>
+    <div id="booksPanel" role="tabpanel" aria-labelledby="booksTab" hidden>
+      <section class="hero books-hero">
+        <p class="eyebrow">A library of possibilities</p>
+        <h1>翻开书页里的<br><em>无限世界</em></h1>
+        <p class="hero-copy">从文学经典到知识新境，寻找下一本值得收藏的好书。输入书名，探索你的私人书架。</p>
+        <form class="search-form" id="bookSearchForm" role="search" aria-label="电子书搜索">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input class="book-search-input" id="bookSearchInput" type="search" maxlength="80" autocomplete="off" placeholder="输入书名或作者…" aria-label="书名或作者" required>
+          <button class="book-search-button" id="bookSearchBtn" type="submit">搜索电子书</button>
+        </form>
+        <div class="suggestions"><span>经典书架</span><button class="book-suggestion suggestion" data-query="红楼梦" type="button">红楼梦</button><button class="book-suggestion suggestion" data-query="西游记" type="button">西游记</button><button class="book-suggestion suggestion" data-query="Pride and Prejudice" type="button">Pride and Prejudice</button></div>
+        <p class="book-demo-notice" id="bookDemoNotice">前端演示 · 后端尚未接入。示例仅用于预览搜索与下载入口，不提供真实下载。</p>
+      </section>
+      <section class="results show book-results" id="bookResults" aria-live="polite" aria-busy="false">
+        <header class="results-head"><div><p class="section-kicker">YOUR READING COLLECTION</p><h2 class="results-title" id="bookResultsTitle">发现下一本好书</h2></div><span class="results-count" id="bookResultsCount"></span></header>
+        <div class="grid" id="bookResultsGrid"><div class="status"><strong aria-hidden="true">阅</strong><h3>你的书架，从一次搜索开始</h3><p>输入书名，或点击上方经典书目体验演示。</p></div></div>
+        <nav class="pagination" id="bookPagination" aria-label="电子书搜索结果分页"></nav>
+      </section>
+    </div>
+    <footer class="footer"><span>Anything · Cinema &amp; Books</span><span>第三方结果仅供检索参考</span></footer>
   </main>
   <div class="resource-modal" id="resourceModal" hidden>
     <div class="resource-backdrop" data-modal-close></div>
@@ -40,5 +65,6 @@
     </section>
   </div>
   <script src="assets/app.js" defer></script>
+  <script src="assets/books.js" defer></script>
 </body>
 </html>

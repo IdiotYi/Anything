@@ -9,11 +9,12 @@ from flask_cors import CORS
 from .config import CORS_ORIGINS
 from .routes import api
 from .services import MovieService
+from .book_service import BookService
 
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 
 
-def create_app(service=None):
+def create_app(service=None, book_service=None):
     app = Flask(
         __name__,
         static_folder=str(FRONTEND_DIR / "assets"),
@@ -23,6 +24,7 @@ def create_app(service=None):
     if CORS_ORIGINS:
         CORS(app, resources={r"/api/*": {"origins": CORS_ORIGINS}})
     app.extensions["movie_service"] = service or MovieService()
+    app.extensions["book_service"] = book_service or BookService()
     app.register_blueprint(api)
 
     @app.after_request

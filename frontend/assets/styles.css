@@ -1,5 +1,26 @@
 :root { --bg:#08090d; --panel:#151720; --gold:#d9b36c; --gold2:#f4d99d; --text:#f7f2e8; --muted:#9697a2; --line:rgba(224,190,121,.18); }
     * { box-sizing:border-box; }
+    [hidden] { display:none!important; }
+    .collection-tabs { display:flex; justify-content:center; gap:8px; margin:28px auto 0; padding:6px; width:fit-content; max-width:100%; border:1px solid var(--line); border-radius:16px; background:rgba(13,14,20,.7); }
+    .collection-tab { padding:12px 26px; color:var(--muted); border:1px solid transparent; border-radius:11px; background:transparent; cursor:pointer; font-size:14px; }
+    .collection-tab span { margin-left:8px; font-size:9px; letter-spacing:.15em; }
+    .collection-tab[aria-selected="true"] { color:var(--gold2); border-color:var(--line); background:rgba(217,179,108,.1); }
+    .collection-tab:hover { color:var(--text); }
+    .books-hero { padding-top:65px; }
+    .book-search-input { min-width:0; flex:1; padding:15px 6px; color:var(--text); border:0; background:transparent; font-size:16px; }
+    .book-search-input::placeholder { color:#656672; }
+    .book-search-button { flex-shrink:0; padding:15px 22px; border:0; border-radius:12px; color:#17130d; background:linear-gradient(135deg,#f2d89e,#c79542); cursor:pointer; font-size:13px; font-weight:800; }
+    .book-search-button:disabled { cursor:wait; opacity:.6; }
+    .book-demo-notice { max-width:700px; margin:22px auto 0; color:var(--muted); font-size:12px; line-height:1.7; }
+    .book-cover { min-height:250px; padding:28px; display:flex; flex-direction:column; justify-content:space-between; gap:22px; border-left:9px solid rgba(217,179,108,.2); background:radial-gradient(ellipse at top right,rgba(217,179,108,.17),transparent 70%),linear-gradient(135deg,#232936,#12151d); }
+    .book-cover h3 { margin:0; color:var(--gold2); font:400 30px/1.35 Georgia,"Noto Serif SC",serif; overflow-wrap:anywhere; }
+    .book-cover-label { color:var(--gold); font-size:9px; letter-spacing:.25em; }
+    .book-cover-author { color:#bab8b3; font-size:13px; }
+    .book-meta { color:var(--muted); font-size:12px; line-height:1.6; overflow-wrap:anywhere; }
+    .book-description { color:#bebbc0; font-size:13px; line-height:1.8; }
+    .book-demo-download { color:#89868b; text-align:left; cursor:not-allowed; }
+    .book-card .download b { white-space:nowrap; }
+    @media(max-width:620px) { .collection-tab{padding:11px 20px}.collection-tab span{display:none}.books-hero{padding-top:48px}.book-search-button{padding:14px 12px}.book-search-input{font-size:14px;padding-left:12px} }
     html { scroll-behavior:smooth; }
     body { margin:0; min-height:100vh; color:var(--text); font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif; background:radial-gradient(circle at 12% 8%,rgba(125,92,255,.2),transparent 31rem),radial-gradient(circle at 88% 22%,rgba(217,179,108,.15),transparent 34rem),linear-gradient(145deg,#07080c,#10111a 52%,#08090d); }
     body:before { content:""; position:fixed; inset:0; pointer-events:none; opacity:.2; background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px); background-size:48px 48px; mask-image:linear-gradient(to bottom,#000,transparent 72%); }
@@ -93,3 +114,83 @@
     @media(max-width:900px) { .grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
     @media(max-width:620px) { .shell{width:calc(100% - 24px)} .topbar{height:72px}.top-meta{display:none}.hero{padding:62px 0 52px}.hero-copy{font-size:13px}.search-icon{display:none}#searchInput{padding-left:12px;font-size:14px}#searchBtn{min-width:96px;padding:14px 12px;letter-spacing:.07em}.results-head{align-items:start;flex-direction:column}.grid{grid-template-columns:1fr;gap:16px}.poster-wrap{height:310px}.movie-title{min-height:auto}.footer{gap:12px;flex-direction:column}.page{min-width:38px;height:38px;padding:0 10px}.resource-modal{padding:10px}.resource-dialog{max-height:90vh;border-radius:17px}.resource-dialog-head{padding:20px 18px 16px}.resource-list{padding:14px 12px 18px}.resource-item{grid-template-columns:28px minmax(0,1fr) auto;padding:12px 10px;gap:8px}.resource-close{width:36px;height:36px} }
     @media(prefers-reduced-motion:reduce) { *,*:before,*:after { scroll-behavior:auto!important; animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+/* Ebook specific card layout */
+.book-card {
+  display: flex;
+  flex-direction: column;
+}
+.book-cover-wrap {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+  background: #0d0e14;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.book-cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #090a0f;
+  transition: transform 0.4s ease;
+}
+.book-card:hover .book-cover-image {
+  transform: scale(1.03);
+}
+.book-cover-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: radial-gradient(circle at 50% 35%, rgba(217, 179, 108, 0.15), transparent 45%), linear-gradient(145deg, #171824, #0d0e14);
+}
+.book-cover-placeholder strong {
+  font: 400 38px Georgia, "Noto Serif SC", serif;
+  color: var(--gold2);
+}
+.book-card-body {
+  padding: 18px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.book-title {
+  margin: 0 0 12px;
+  font: 500 18px/1.4 Georgia, "Noto Serif SC", serif;
+  color: #f7f2e8;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 50px;
+}
+.book-author, .book-format-size, .book-language {
+  margin: 0 0 7px;
+  font-size: 13px;
+  line-height: 1.5;
+  display: flex;
+  align-items: baseline;
+  overflow-wrap: anywhere;
+}
+.meta-label {
+  color: var(--muted);
+  flex-shrink: 0;
+  width: 68px;
+  font-size: 12px;
+}
+.meta-val {
+  color: #ddd6cb;
+  font-weight: 400;
+}
+.book-downloads {
+  margin-top: auto;
+  padding-top: 12px;
+}
+.book-download-link {
+  color: var(--gold2);
+}
