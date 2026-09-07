@@ -5,7 +5,6 @@ import os
 import re
 import sys
 import time
-import winreg
 from urllib.parse import quote, urljoin
 from bs4 import BeautifulSoup
 from curl_cffi import requests
@@ -17,6 +16,8 @@ def get_system_proxy():
     """自动检测系统代理配置（Windows 注册表或系统环境变量）。"""
     if sys.platform == "win32":
         try:
+            import winreg
+
             reg = winreg.ConnectRegistry(None, winreg.HKEY_CURRENT_USER)
             key = winreg.OpenKey(reg, r"Software\Microsoft\Windows\CurrentVersion\Internet Settings")
             enabled, _ = winreg.QueryValueEx(key, "ProxyEnable")
